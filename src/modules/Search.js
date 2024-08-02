@@ -3,6 +3,7 @@ import $ from 'jquery';
 class Search {
     //1. describe our object
     constructor() {
+        this.addSearchHtml();
         this.resultDiv = $("#search-overlay__results");
         this.openButton = $('.js-search-trigger');
         this.closeButton = $('.search-overlay__close');
@@ -67,6 +68,22 @@ class Search {
                 `);
             this.isSpinnerVisible = false;
         });
+    }
+    addSearchHtml() {
+        $('body').append(`
+            <div class="search-overlay">
+            <div class="search-overlay__top">
+                <div class="container">
+                    <i class="fa fa-search search-overlay__icon" aria-hidden="true"></i>
+                    <input class="search-term" id="search-term" type="text" placeholder="What are you looking for?">
+                    <i class="fa fa-window-close search-overlay__close" aria-hidden="true"></i>
+                </div>
+            </div>
+            <div class="container">
+                <div id="search-overlay__results"></div>
+            </div>
+            </div>
+    `)
     }
 }
 
