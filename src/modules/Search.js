@@ -58,8 +58,15 @@ class Search {
         this.preValue = this.searchField.val();
     }
     getResults() {
-        this.resultDiv.html('hello');
-        this.isSpinnerVisible = false;
+        $.getJSON('http://udemy.local/wp-json/wp/v2/posts?search=' + this.searchField.val(), posts => {
+            this.resultDiv.html(`
+                <h2 class="search-overlay__section-title">Search Results</h2>
+                    <ul class="link-list min-list">
+                        ${posts.map(item => `<li><a href=${item.link}>${item.title.rendered}</a></li>`).join('')}
+                    </ul>
+                `);
+        });
+        //this.isSpinnerVisible = false;
     }
 }
 

@@ -252,8 +252,15 @@ class Search {
     this.preValue = this.searchField.val();
   }
   getResults() {
-    this.resultDiv.html('hello');
-    this.isSpinnerVisible = false;
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().getJSON('http://udemy.local/wp-json/wp/v2/posts?search=' + this.searchField.val(), posts => {
+      this.resultDiv.html(`
+                <h2 class="search-overlay__section-title">Search Results</h2>
+                    <ul class="link-list min-list">
+                        ${posts.map(item => `<li><a href=${item.link}>${item.title.rendered}</a></li>`).join('')}
+                    </ul>
+                `);
+    });
+    //this.isSpinnerVisible = false;
   }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Search);
