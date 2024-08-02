@@ -252,7 +252,7 @@ class Search {
     this.preValue = this.searchField.val();
   }
   getResults() {
-    jquery__WEBPACK_IMPORTED_MODULE_0___default().getJSON('http://udemy.local/wp-json/wp/v2/posts?search=' + this.searchField.val(), posts => {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().getJSON(uniData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.val(), posts => {
       this.resultDiv.html(`
                 <h2 class="search-overlay__section-title">Search Results</h2>
                 ${posts.length ? '<ul class="link-list min-list">' : '<p>No results</p>'}
