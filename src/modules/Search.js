@@ -26,6 +26,9 @@ class Search {
     openOverlay() {
         this.searchOverlay.addClass("search-overlay--active");
         $("body").addClass('body-no-scroll');
+        setTimeout(() => {
+            this.searchField.focus();
+        }, 301);
         this.isOverlayOpen = true;
     }
     closeOverlay() {
@@ -49,7 +52,7 @@ class Search {
                     this.resultDiv.html('<div class="spinner-loader"></div>');
                     this.isSpinnerVisible = true;
                 }
-                this.typingTimer = setTimeout(this.getResults.bind(this), 2000);
+                this.typingTimer = setTimeout(this.getResults.bind(this), 750);
             } else {
                 this.resultDiv.html('');
                 this.isSpinnerVisible = false;
