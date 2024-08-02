@@ -255,9 +255,9 @@ class Search {
     jquery__WEBPACK_IMPORTED_MODULE_0___default().getJSON('http://udemy.local/wp-json/wp/v2/posts?search=' + this.searchField.val(), posts => {
       this.resultDiv.html(`
                 <h2 class="search-overlay__section-title">Search Results</h2>
-                    <ul class="link-list min-list">
+                ${posts.length ? '<ul class="link-list min-list">' : '<p>No results</p>'}
                         ${posts.map(item => `<li><a href=${item.link}>${item.title.rendered}</a></li>`).join('')}
-                    </ul>
+                ${posts.length ? '</ul">' : ''}
                 `);
     });
     //this.isSpinnerVisible = false;
