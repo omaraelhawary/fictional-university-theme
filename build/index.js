@@ -225,11 +225,13 @@ class Search {
       this.searchField.focus();
     }, 301);
     this.isOverlayOpen = true;
+    this.searchField.val('');
   }
   closeOverlay() {
     this.searchOverlay.removeClass('search-overlay--active');
     jquery__WEBPACK_IMPORTED_MODULE_0___default()("body").removeClass('body-no-scroll');
     this.isOverlayOpen = false;
+    this.resultDiv.html('');
   }
   keyPressDispatcher(e) {
     if (e.keyCode == 83 && !this.isOverlayOpen && !jquery__WEBPACK_IMPORTED_MODULE_0___default()("input, textarea").is(':focus')) {
