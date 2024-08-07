@@ -1,5 +1,7 @@
 <?php
 
+require get_theme_file_path('/inc/search-route.php');
+
 function pageBannersection($args = NULL){
 
     if(!isset($args['title'])){
