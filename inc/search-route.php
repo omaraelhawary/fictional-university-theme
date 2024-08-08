@@ -9,9 +9,10 @@ function unvierstyRegisterSeach(){
 
 add_action('rest_api_init', 'unvierstyRegisterSeach');
 
-function universitySearchResults(){
+function universitySearchResults($data){
     $proffessors = new WP_Query(array(
         'post_type' => 'professor',
+        's' => sanitize_text_field( $data['keyword']),
     ));
 
     $proffessorsResult = array();
