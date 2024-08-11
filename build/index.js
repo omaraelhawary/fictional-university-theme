@@ -192,11 +192,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "jquery");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+
 class Search {
   //1. describe our object
   constructor() {
     this.addSearchHtml();
-    this.resultDiv = document.getElementById("search-overlay__results");
+    this.resultDiv = jquery__WEBPACK_IMPORTED_MODULE_0___default()("#search-overlay__results");
     this.openButton = document.querySelectorAll('.js-search-trigger');
     this.closeButton = document.querySelector('.search-overlay__close');
     this.searchOverlay = document.querySelector('.search-overlay');
@@ -257,17 +260,32 @@ class Search {
     this.preValue = this.searchField.value;
   }
   getResults() {
-    Promise.all([fetch(uniData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.value).then(res => res.json()), fetch(uniData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchField.value).then(res => res.json())]).then(([posts, pages]) => {
-      const combineResults = posts.concat(pages);
-      this.resultDiv.innerHTML = `
-                <h2 class="search-overlay__section-title">Search Results</h2>
-                ${combineResults.length ? '<ul class="link-list min-list">' : '<p>No results</p>'}
-                    ${combineResults.map(item => `<li><a href="${item.link}">${item.title.rendered}</a> ${item.type == 'post' ? `by ${item.authorName}` : ''}</li>`).join('')}
-                ${combineResults.length ? '</ul>' : ''}
-            `;
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().getJSON(uniData.root_url + '/wp-json/university/v1/search?keyword=' + this.searchField.value, results => {
+      this.resultDiv.html(`
+                <div class="row">
+                    <div class="one-third">
+                        <h2 class="search-overlay__section-title">General Information</h2>
+                        ${results.universityPosts.length ? '<ul class="link-list min-list">' : '<p>No results</p>'}
+                            ${results.universityPosts.map(item => `<li><a href="${item.link}">${item.title}</a> ${item.postType == 'post' ? `by ${item.authorName}` : ''}</li>`).join('')}
+                        ${results.universityPosts.length ? '</ul>' : ''}
+                    </div>
+                    <div class="one-third">
+                        <h2 class="search-overlay__section-title">Programs</h2>
+                        ${results.universityProg.length ? '<ul class="link-list min-list">' : `<p>No results. <a href="${uniData.root_url}/programs"> View all programs </a></p>`}
+                        ${results.universityProg.map(item => `<li><a href="${item.link}">${item.title}</a></li>`).join('')}${results.universityProg.length ? '</ul>' : ''}
+                        <h2 class="search-overlay__section-title">Professors</h2>
+
+                        </div>
+                    <div class="one-third">
+                        <h2 class="search-overlay__section-title">Campuses</h2>
+                        ${results.universityCamp.length ? '<ul class="link-list min-list">' : `<p>No results. <a href="${uniData.root_url}/campuses"> View all Campuses </a></p>`}
+                        ${results.universityCamp.map(item => `<li><a href="${item.link}">${item.title}</a></li>`).join('')}${results.universityCamp.length ? '</ul>' : ''}
+                        <h2 class="search-overlay__section-title">Events</h2>
+
+                    </div>
+                </div>
+                `);
       this.isSpinnerVisible = false;
-    }).catch(() => {
-      this.resultDiv.innerHTML = "<p>No results</p>";
     });
   }
   addSearchHtml() {
@@ -300,6 +318,16 @@ class Search {
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
+
+/***/ }),
+
+/***/ "jquery":
+/*!*************************!*\
+  !*** external "jQuery" ***!
+  \*************************/
+/***/ ((module) => {
+
+module.exports = window["jQuery"];
 
 /***/ }),
 
@@ -4268,6 +4296,18 @@ var Glide = /*#__PURE__*/function (_Core) {
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
 /******/ 		};
 /******/ 	})();
 /******/ 	

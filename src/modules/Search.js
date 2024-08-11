@@ -1,8 +1,10 @@
+import $ from "jquery";
+
 class Search {
     //1. describe our object
     constructor() {
         this.addSearchHtml();
-        this.resultDiv = document.getElementById("search-overlay__results");
+        this.resultDiv = $("#search-overlay__results");
         this.openButton = document.querySelectorAll('.js-search-trigger');
         this.closeButton = document.querySelector('.search-overlay__close');
         this.searchOverlay = document.querySelector('.search-overlay');
@@ -67,21 +69,33 @@ class Search {
     }
 
     getResults() {
-        Promise.all([
-            fetch(uniData.root_url + '/wp-json/wp/v2/posts?search=' + this.searchField.value).then(res => res.json()),
-            fetch(uniData.root_url + '/wp-json/wp/v2/pages?search=' + this.searchField.value).then(res => res.json())
-        ]).then(([posts, pages]) => {
-            const combineResults = posts.concat(pages);
-            this.resultDiv.innerHTML = `
-                <h2 class="search-overlay__section-title">Search Results</h2>
-                ${combineResults.length ? '<ul class="link-list min-list">' : '<p>No results</p>'}
-                    ${combineResults.map(item => `<li><a href="${item.link}">${item.title.rendered}</a> ${item.type == 'post' ? `by ${item.authorName}` : ''}</li>`).join('')}
-                ${combineResults.length ? '</ul>' : ''}
-            `;
-            this.isSpinnerVisible = false;
-        }).catch(() => {
-            this.resultDiv.innerHTML = "<p>No results</p>";
-        });
+        $.getJSON((uniData.root_url + '/wp-json/university/v1/search?keyword=' + this.searchField.value), (results) => {
+            this.resultDiv.html(`
+                <div class="row">
+                    <div class="one-third">
+                        <h2 class="search-overlay__section-title">General Information</h2>
+                        ${results.universityPosts.length ? '<ul class="link-list min-list">' : '<p>No results</p>'}
+                            ${results.universityPosts.map(item => `<li><a href="${item.link}">${item.title}</a> ${item.postType == 'post' ? `by ${item.authorName}` : ''}</li>`).join('')}
+                        ${results.universityPosts.length ? '</ul>' : ''}
+                    </div>
+                    <div class="one-third">
+                        <h2 class="search-overlay__section-title">Programs</h2>
+                        ${results.universityProg.length ? '<ul class="link-list min-list">' : `<p>No results. <a href="${uniData.root_url}/programs"> View all programs </a></p>`}
+                        ${results.universityProg.map(item => `<li><a href="${item.link}">${item.title}</a></li>`).join('')}${results.universityProg.length ? '</ul>' : ''}
+                        <h2 class="search-overlay__section-title">Professors</h2>
+
+                        </div>
+                    <div class="one-third">
+                        <h2 class="search-overlay__section-title">Campuses</h2>
+                        ${results.universityCamp.length ? '<ul class="link-list min-list">' : `<p>No results. <a href="${uniData.root_url}/campuses"> View all Campuses </a></p>`}
+                        ${results.universityCamp.map(item => `<li><a href="${item.link}">${item.title}</a></li>`).join('')}${results.universityCamp.length ? '</ul>' : ''}
+                        <h2 class="search-overlay__section-title">Events</h2>
+
+                    </div>
+                </div>
+                `)
+            this.isSpinnerVisible = false
+        })
     }
 
     addSearchHtml() {

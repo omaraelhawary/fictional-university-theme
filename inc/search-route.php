@@ -32,10 +32,13 @@ function universitySearchResults($data){
     
     while($mainQuery -> have_posts()){
         $mainQuery -> the_post();
-        if(get_post_type() == 'post' || get_post_type() == 'page'){
+        if(get_post_type() == 'post' OR get_post_type() == 'page'){
             array_push($results['universityPosts'], array(
                 'title' => get_the_title(),
                 'link' => get_the_permalink(),
+                'postType' => get_post_type(),
+                'authorName' => get_the_author(),
+                
             ));
         }
         if(get_post_type() == 'professor'){
@@ -50,8 +53,8 @@ function universitySearchResults($data){
                 'link' => get_the_permalink(),
             ));
         }
-        if(get_post_type() == 'professor'){
-            array_push($results['universityPosts'], array(
+        if(get_post_type() == 'event'){
+            array_push($results['universityEvent'], array(
                 'title' => get_the_title(),
                 'link' => get_the_permalink(),
             ));
