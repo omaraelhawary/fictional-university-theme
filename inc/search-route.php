@@ -45,6 +45,7 @@ function universitySearchResults($data){
             array_push($results['universityProf'], array(
                 'title' => get_the_title(),
                 'link' => get_the_permalink(),
+                'professorImage' => get_the_post_thumbnail_url(0, 'professorLandscape'),
             ));
         }
         if(get_post_type() == 'program'){

@@ -73,26 +73,43 @@ class Search {
             this.resultDiv.html(`
                 <div class="row">
                     <div class="one-third">
+                        <!-- Posts and Pages results -->
                         <h2 class="search-overlay__section-title">General Information</h2>
                         ${results.universityPosts.length ? '<ul class="link-list min-list">' : '<p>No results</p>'}
                             ${results.universityPosts.map(item => `<li><a href="${item.link}">${item.title}</a> ${item.postType == 'post' ? `by ${item.authorName}` : ''}</li>`).join('')}
                         ${results.universityPosts.length ? '</ul>' : ''}
                     </div>
                     <div class="one-third">
+                        <!-- Programs results -->
                         <h2 class="search-overlay__section-title">Programs</h2>
                         ${results.universityProg.length ? '<ul class="link-list min-list">' : `<p>No results. <a href="${uniData.root_url}/programs"> View all programs </a></p>`}
                         ${results.universityProg.map(item => `<li><a href="${item.link}">${item.title}</a></li>`).join('')}${results.universityProg.length ? '</ul>' : ''}
+                        <!-- Professors results -->
                         <h2 class="search-overlay__section-title">Professors</h2>
-
+                        ${results.universityProf.length ? '<ul class="professor-cards">' : `<p>No results. <a href="${uniData.root_url}/professors"> View all Professors </a></p>`}
+                        ${results.universityProf.map(item => `<li class="professor-card__list-item">
+                            <a class="professor-card" href="${item.link}">
+                                <img class="professor-card__image" src="${item.professorImage}">
+                                <span class="professor-card__name">
+                                    ${item.title}
+                                </span>
+                            </a>
+                        </li>`).join('')}
+                        ${results.universityProf.length ? '</ul>' : ''}
+                        
                         </div>
                     <div class="one-third">
+                        <!-- Campuses results -->
                         <h2 class="search-overlay__section-title">Campuses</h2>
                         ${results.universityCamp.length ? '<ul class="link-list min-list">' : `<p>No results. <a href="${uniData.root_url}/campuses"> View all Campuses </a></p>`}
-                        ${results.universityCamp.map(item => `<li><a href="${item.link}">${item.title}</a></li>`).join('')}${results.universityCamp.length ? '</ul>' : ''}
+                        ${results.universityCamp.map(item => `<li><a href="${item.link}">${item.title}</a></li>`).join('')}
+                        ${results.universityCamp.length ? '</ul>' : ''}
+
+                        <!-- Events results -->
                         <h2 class="search-overlay__section-title">Events</h2>
 
-                    </div>
-                </div>
+                    </div >
+                </div >
                 `)
             this.isSpinnerVisible = false
         })
@@ -100,7 +117,7 @@ class Search {
 
     addSearchHtml() {
         document.body.insertAdjacentHTML('beforeend', `
-            <div class="search-overlay">
+                < div class= "search-overlay" >
                 <div class="search-overlay__top">
                     <div class="container">
                         <i class="fa fa-search search-overlay__icon" aria-hidden="true"></i>
@@ -111,8 +128,8 @@ class Search {
                 <div class="container">
                     <div id="search-overlay__results"></div>
                 </div>
-            </div>
-        `);
+            </ >
+                `);
     }
 }
 
