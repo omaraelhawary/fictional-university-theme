@@ -55,9 +55,21 @@ function universitySearchResults($data){
             ));
         }
         if(get_post_type() == 'event'){
+
+            $eventDate = new DateTime(get_field('event_date'));
+            $description = NULL;
+            if(has_excerpt()){
+                $description = get_the_excerpt();
+            } else {
+                $description = wp_trim_words(get_the_Content(), 18); 
+            }
+            
             array_push($results['universityEvent'], array(
                 'title' => get_the_title(),
                 'link' => get_the_permalink(),
+                'month' => $eventDate -> format('M'),
+                'day' => $eventDate -> format('d'),
+                'desc' => $description,
             ));
         }
         if(get_post_type() == 'campus'){
