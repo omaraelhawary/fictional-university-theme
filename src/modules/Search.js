@@ -93,7 +93,7 @@ class Search {
                         <!-- Professors results -->
                         <h2 class="search-overlay__section-title">Professors</h2>
 
-                        ${results.universityProf.length ? '<ul class="professor-cards">' : `<p>No results. <a href="${uniData.root_url}/professors"> View all Professors </a></p>`}
+                        ${results.universityProf.length ? '<ul class="professor-cards">' : `<p>No results.</p>`}
 
                         ${results.universityProf.map(item => `<li class="professor-card__list-item">
                             <a class="professor-card" href="${item.link}">
@@ -111,7 +111,7 @@ class Search {
                         <!-- Campuses results -->
                         <h2 class="search-overlay__section-title">Campuses</h2>
                         ${results.universityCamp.length ? '' : `<p>No results. <a href="${uniData.root_url}/campuses"> View all Campuses </a></p>`}
-                            ${results.universityCamp.map(item => `<li><a href="${item.link}">${item.title}</a></li>`).join('')}
+                            ${results.universityCamp.map(item => `<a href="${item.link}">${item.title}</a>`).join('')}
                         
 
                         <!-- Events results -->
