@@ -202,17 +202,24 @@ class Search {
     this.closeButton = document.querySelectorAll('.search-overlay__close');
     this.searchOverlay = document.querySelector('.search-overlay');
     this.searchField = document.getElementById('search-term');
-    this.events();
     this.isOverlayOpen = false;
     this.isSpinnerVisible = false;
-    this.preValue = '';
-    this.typingTimer = null;
+    this.preValue;
+    this.typingTimer;
+    this.events();
   }
   events() {
-    this.openButton.forEach(button => button.addEventListener('click', this.openOverlay.bind(this)));
-    this.closeButton.forEach(button => button.addEventListener('click', this.closeOverlay.bind(this)));
-    document.addEventListener('keydown', this.keyPressDispatcher.bind(this));
-    this.searchField.addEventListener('keyup', this.typingLogic.bind(this));
+    this.openButton.forEach(el => {
+      el.addEventListener("click", e => {
+        e.preventDefault();
+        this.openOverlay();
+      });
+    });
+    this.closeButton.forEach(el => {
+      el.addEventListener("click", () => this.closeOverlay());
+    });
+    document.addEventListener("keydown", e => this.keyPressDispatcher(e));
+    this.searchField.addEventListener("keyup", () => this.typingLogic());
   }
   openOverlay() {
     this.searchOverlay.classList.add("search-overlay--active");
@@ -222,6 +229,7 @@ class Search {
     }, 301);
     this.isOverlayOpen = true;
     this.searchField.value = '';
+    return false;
   }
   closeOverlay() {
     this.searchOverlay.classList.remove('search-overlay--active');
@@ -284,7 +292,7 @@ class Search {
                     <div class="one-third">
                         <h2 class="search-overlay__section-title">Campuses</h2>
                         ${results.universityCamp.length ? '' : `<p>No results. <a href="${uniData.root_url}/campuses"> View all Campuses </a></p>`}
-                            ${results.universityCamp.map(item => `<a href="${item.link}">${item.title}</a>`).join('')}
+                            ${results.universityCamp.map(item => `<a href="${item.link}">${item.title}</a> <br>`).join('')}
                         
                         <h2 class="search-overlay__section-title">Events</h2>
                         ${results.universityEvent.length ? '' : `<p>No results. <a href="${uniData.root_url}/events"> View all Events</a></p>`}
