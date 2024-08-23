@@ -123,3 +123,38 @@ function universty_custom_rest() {
 }
 
 add_action('rest_api_init', 'universty_custom_rest');
+
+
+
+/**
+ * Redirects a subscriber to the site's homepage when they try to access the admin dashboard.
+ *
+ * @return void
+ */
+function redirectSubs(){
+    
+    $ourCurrentUser = wp_get_current_user();
+
+    if(count($ourCurrentUser -> roles)==1 && $ourCurrentUser -> roles[0] == 'subscriber'){
+        wp_redirect(site_url('/'));
+        exit;
+    }
+}
+
+add_action('admin_init', 'redirectSubs');
+
+/**
+ * Hides the admin bar for users with the subscriber role.
+ *
+ * @return void
+ */
+function noSubsAdminbar(){
+    
+    $ourCurrentUser = wp_get_current_user();
+
+    if(count($ourCurrentUser -> roles)==1 && $ourCurrentUser -> roles[0] == 'subscriber'){
+        show_admin_bar(false);
+    }
+}
+
+add_action('wp_loaded', 'noSubsAdminbar');
