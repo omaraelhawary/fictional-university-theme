@@ -158,3 +158,39 @@ function noSubsAdminbar(){
 }
 
 add_action('wp_loaded', 'noSubsAdminbar');
+
+/**
+ * Returns the URL of the site's logo.
+ *
+ * @return string The URL of the site's logo.
+ */
+function logo_url(){
+    return esc_url(site_url('/'));
+}
+
+add_filter('login_headerurl', 'logo_url');
+
+/**
+ * Enqueues styles for the login page.
+ *
+ * @return void
+ */
+function loginCSS() {
+    wp_enqueue_style( 'google-font', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
+    wp_enqueue_style( 'font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+    wp_enqueue_style( 'university_main_styles', get_theme_file_uri('/build/style-index.css'));
+    wp_enqueue_style( 'university_extra_styles', get_theme_file_uri('/build/index.css'));
+}
+
+add_action('login_enqueue_scripts', 'loginCSS');
+
+/**
+ * Returns the title of the blog.
+ *
+ * @return string The title of the blog.
+ */
+function logo_title(){
+    return get_bloginfo('name');
+}
+
+add_filter('login_headertitle', 'logo_title');
