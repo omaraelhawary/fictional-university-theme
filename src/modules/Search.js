@@ -30,13 +30,13 @@ class Search {
     }
 
     openOverlay() {
-        this.searchOverlay.classList.add("search-overlay--active");
-        document.body.classList.add('body-no-scroll');
+        this.searchOverlay.classList.add("search-overlay--active")
+        document.body.classList.add('body-no-scroll')
         setTimeout(() => {
-            this.searchField.focus();
+            this.searchField.focus()
         }, 301);
-        this.isOverlayOpen = true;
-        this.searchField.value = '';
+        this.isOverlayOpen = true
+        this.searchField.value = ''
         return false;
     }
 
