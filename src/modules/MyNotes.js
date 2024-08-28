@@ -2,18 +2,14 @@ import $ from "jquery"
 
 class myNotes {
     constructor() {
-        this.deletebtn = document.querySelector(".delete-note");
-        this.updatebtn = document.querySelector(".update-note");
+        this.deleteBtn = document.querySelector(".delete-note");
+        this.editeBtn = document.querySelector(".edit-note");
         this.events();
     }
 
     events() {
-        if (this.deletebtn) {
-            this.deletebtn.addEventListener("click", this.deleteNote.bind(this));
-        }
-        if (this.updatebtn) {
-            this.updatebtn.addEventListener("click", this.deleteNote.bind(this));
-        }
+        $(".delete-note").on("click", this.deleteNote);
+        $(".edit-note").on("click", this.editNote.bind(this));
     }
 
     deleteNote(e) {
@@ -34,6 +30,31 @@ class myNotes {
                 console.log(response);
             }
         })
+    }
+
+    editNote(e) {
+        var thisNote = $(e.target).parents("li");
+
+        if (thisNote.data('state') == "editable") {
+            this.makeNoteReadonly(thisNote);
+        } else {
+            this.makeNoteEditable(thisNote);
+        }
+    }
+
+    makeNoteEditable(thisNote) {
+        thisNote.find(".edit-note").html('<i class="fa fa-times" aria-hidden="true"></i> Cancel')
+        thisNote.find('.note-title-field, .note-body-field').removeAttr('readonly').addClass("note-active-field");
+        thisNote.find(".update-note").addClass("update-note--visible");
+        thisNote.data("state", "editable");
+
+    }
+
+    makeNoteReadonly(thisNote) {
+        thisNote.find(".edit-note").html('<i class="fa fa-pencil" aria-hidden="true"></i> Edit')
+        thisNote.find('.note-title-field, .note-body-field').attr('readonly', 'readyonly').removeClass("note-active-field");
+        thisNote.find(".update-note").removeClass("update-note--visible");
+        thisNote.data("state", "cancel");
     }
 }
 
