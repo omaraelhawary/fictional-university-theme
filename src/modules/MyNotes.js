@@ -11,6 +11,7 @@ class myNotes {
         $(".delete-note").on("click", this.deleteNote);
         $(".edit-note").on("click", this.editNote.bind(this));
         $(".update-note").on("click", this.saveNote.bind(this));
+        $(".submit-note").on("click", this.submitNote.bind(this));
     }
 
     deleteNote(e) {
@@ -82,6 +83,34 @@ class myNotes {
             }
         })
     }
+
+    submitNote(e) {
+        var newNote = {
+            'title': thisNote.find(".new-note-title").val(),
+            'content': thisNote.find(".new-note-body").val(),
+            'status': 'publish'
+        }
+        $.ajax({
+            beforeSend: (xhr) => {
+                xhr.setRequestHeader("X-WP-Nonce", uniData.nonce);
+            },
+            url: uniData.root_url + "/wp-json/wp/v2/note/",
+            type: 'POST',
+            data: newNote,
+            success: (response) => {
+                $(".new-note-title, .new-note-body").val("");
+                $("").prependTo("#my-notes").hide().slideDown();
+                console.log("added");
+                console.log(response);
+            },
+            error: (response) => {
+                console.log("error");
+                console.log(response);
+            }
+        })
+    }
+
+
 }
 
 export default myNotes
