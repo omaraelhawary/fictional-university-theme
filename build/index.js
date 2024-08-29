@@ -207,6 +207,7 @@ class myNotes {
   events() {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(".delete-note").on("click", this.deleteNote);
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(".edit-note").on("click", this.editNote.bind(this));
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".update-note").on("click", this.saveNote.bind(this));
   }
   deleteNote(e) {
     var thisNote = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e.target).parents("li");
@@ -246,6 +247,30 @@ class myNotes {
     thisNote.find('.note-title-field, .note-body-field').attr('readonly', 'readyonly').removeClass("note-active-field");
     thisNote.find(".update-note").removeClass("update-note--visible");
     thisNote.data("state", "cancel");
+  }
+  saveNote(e) {
+    var thisNote = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e.target).parents("li");
+    var ourUpdateData = {
+      'title': thisNote.find(".note-title-field").val(),
+      'content': thisNote.find(".note-body-field").val()
+    };
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      beforeSend: xhr => {
+        xhr.setRequestHeader("X-WP-Nonce", uniData.nonce);
+      },
+      url: uniData.root_url + "/wp-json/wp/v2/note/" + thisNote.data('id'),
+      type: 'POST',
+      data: ourUpdateData,
+      success: response => {
+        this.makeNoteReadonly(thisNote);
+        console.log("updated");
+        console.log(response);
+      },
+      error: response => {
+        console.log("error");
+        console.log(response);
+      }
+    });
   }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (myNotes);

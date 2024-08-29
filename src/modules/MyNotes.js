@@ -10,6 +10,7 @@ class myNotes {
     events() {
         $(".delete-note").on("click", this.deleteNote);
         $(".edit-note").on("click", this.editNote.bind(this));
+        $(".update-note").on("click", this.saveNote.bind(this));
     }
 
     deleteNote(e) {
@@ -55,6 +56,31 @@ class myNotes {
         thisNote.find('.note-title-field, .note-body-field').attr('readonly', 'readyonly').removeClass("note-active-field");
         thisNote.find(".update-note").removeClass("update-note--visible");
         thisNote.data("state", "cancel");
+    }
+
+    saveNote(e) {
+        var thisNote = $(e.target).parents("li");
+        var ourUpdateData = {
+            'title': thisNote.find(".note-title-field").val(),
+            'content': thisNote.find(".note-body-field").val()
+        }
+        $.ajax({
+            beforeSend: (xhr) => {
+                xhr.setRequestHeader("X-WP-Nonce", uniData.nonce);
+            },
+            url: uniData.root_url + "/wp-json/wp/v2/note/" + thisNote.data('id'),
+            type: 'POST',
+            data: ourUpdateData,
+            success: (response) => {
+                this.makeNoteReadonly(thisNote);
+                console.log("updated");
+                console.log(response);
+            },
+            error: (response) => {
+                console.log("error");
+                console.log(response);
+            }
+        })
     }
 }
 
