@@ -205,9 +205,9 @@ class myNotes {
     this.events();
   }
   events() {
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".delete-note").on("click", this.deleteNote);
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".edit-note").on("click", this.editNote.bind(this));
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".update-note").on("click", this.saveNote.bind(this));
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()("#my-notes").on("click", ".delete-note", this.deleteNote);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()("#my-notes").on("click", ".edit-note", this.editNote.bind(this));
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()("#my-notes").on("click", ".update-note", this.saveNote.bind(this));
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(".submit-note").on("click", this.submitNote.bind(this));
   }
   deleteNote(e) {
@@ -275,8 +275,8 @@ class myNotes {
   }
   submitNote(e) {
     var newNote = {
-      'title': thisNote.find(".new-note-title").val(),
-      'content': thisNote.find(".new-note-body").val(),
+      'title': jquery__WEBPACK_IMPORTED_MODULE_0___default()(".new-note-title").val(),
+      'content': jquery__WEBPACK_IMPORTED_MODULE_0___default()(".new-note-body").val(),
       'status': 'publish'
     };
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
@@ -288,7 +288,17 @@ class myNotes {
       data: newNote,
       success: response => {
         jquery__WEBPACK_IMPORTED_MODULE_0___default()(".new-note-title, .new-note-body").val("");
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()("").prependTo("#my-notes").hide().slideDown();
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()(`
+                    <li data-id="${response.id}">
+                        <input readonly class="note-title-field" value="${response.title.raw}">
+                        <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</span>
+                        <span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</span>
+                        <textarea readonly class="note-body-field"> ${response.content.raw}
+                        </textarea>
+                        <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            Save</span>
+                    </li>    
+                `).prependTo("#my-notes").hide().slideDown();
         console.log("added");
         console.log(response);
       },

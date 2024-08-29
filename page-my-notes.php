@@ -14,7 +14,7 @@ if (!is_user_logged_in()) {
 
     <div class="create-note">
         <h2 class="headline headline--medium">Create New Note</h2>
-        <input placeholder="title" class="new-note-title" type="text">
+        <input placeholder="Note Title" class="new-note-title" type="text">
         <textarea class="new-note-body" placeholder="Your note here..."></textarea>
         <span class="submit-note btn btn--blue">Create Note</span> <span class="note-limit-message"></span>
     </div>

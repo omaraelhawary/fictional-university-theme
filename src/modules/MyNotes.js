@@ -8,9 +8,9 @@ class myNotes {
     }
 
     events() {
-        $(".delete-note").on("click", this.deleteNote);
-        $(".edit-note").on("click", this.editNote.bind(this));
-        $(".update-note").on("click", this.saveNote.bind(this));
+        $("#my-notes").on("click", ".delete-note", this.deleteNote);
+        $("#my-notes").on("click", ".edit-note", this.editNote.bind(this));
+        $("#my-notes").on("click", ".update-note", this.saveNote.bind(this));
         $(".submit-note").on("click", this.submitNote.bind(this));
     }
 
@@ -86,8 +86,8 @@ class myNotes {
 
     submitNote(e) {
         var newNote = {
-            'title': thisNote.find(".new-note-title").val(),
-            'content': thisNote.find(".new-note-body").val(),
+            'title': $(".new-note-title").val(),
+            'content': $(".new-note-body").val(),
             'status': 'publish'
         }
         $.ajax({
@@ -99,7 +99,17 @@ class myNotes {
             data: newNote,
             success: (response) => {
                 $(".new-note-title, .new-note-body").val("");
-                $("").prependTo("#my-notes").hide().slideDown();
+                $(`
+                    <li data-id="${response.id}">
+                        <input readonly class="note-title-field" value="${response.title.raw}">
+                        <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</span>
+                        <span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</span>
+                        <textarea readonly class="note-body-field"> ${response.content.raw}
+                        </textarea>
+                        <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            Save</span>
+                    </li>    
+                `).prependTo("#my-notes").hide().slideDown();
                 console.log("added");
                 console.log(response);
             },
