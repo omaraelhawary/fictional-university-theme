@@ -277,7 +277,7 @@ class myNotes {
     var newNote = {
       'title': jquery__WEBPACK_IMPORTED_MODULE_0___default()(".new-note-title").val(),
       'content': jquery__WEBPACK_IMPORTED_MODULE_0___default()(".new-note-body").val(),
-      'status': 'publish'
+      'status': 'private'
     };
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       beforeSend: xhr => {

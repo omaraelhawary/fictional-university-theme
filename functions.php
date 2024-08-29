@@ -195,3 +195,19 @@ function logo_title(){
 }
 
 add_filter('login_headertitle', 'logo_title');
+
+/**
+ * Modifies the post status of a note to 'private' if it's not in the trash.
+ *
+ * @param array $data Post data.
+ * @return array Modified post data.
+ */
+function privateNote($data){
+
+    if($data['post_type'] == 'note' && $data['post_status'] != 'trash'){
+        $data['post_status'] = 'private';
+        }    
+    return $data;
+}
+
+add_filter('wp_insert_post_data', 'privateNote');
