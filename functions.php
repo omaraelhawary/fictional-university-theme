@@ -196,14 +196,18 @@ function logo_title(){
 
 add_filter('login_headertitle', 'logo_title');
 
+
 /**
- * Modifies the post status of a note to 'private' if it's not in the trash.
+ * Sanitizes the post content and title for a private note and sets the post status to private.
  *
- * @param array $data Post data.
- * @return array Modified post data.
+ * @param array $data The post data to be sanitized and updated.
+ * @return array The sanitized and updated post data.
  */
 function privateNote($data){
-
+    if($data['post_type'] == 'note'){
+        $data['post_content'] = sanitize_textarea_field($data['post_content']);
+        $data['post_title'] = sanitize_text_field($data['post_title']);
+    }
     if($data['post_type'] == 'note' && $data['post_status'] != 'trash'){
         $data['post_status'] = 'private';
         }    
