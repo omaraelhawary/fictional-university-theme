@@ -100,24 +100,28 @@ function university_map_api($api){
 }
 add_filter( 'acf/fields/google_map/api', 'university_map_api');
 
+
 /**
- * Registers a custom REST field for the 'post' post type.
- * The field is named 'authorName' and retrieves the author's name.
+ * Registers custom REST fields for the 'post' and 'note' post types.
  *
  * @return void
  */
 function universty_custom_rest() {
     register_rest_field(
-        'post', // The post type for which the field is registered
-        'authorName', // The name of the field
+        'post', 
+        'authorName', 
         array(
             'get_callback' => function() {
-                /**
-                 * Retrieves the author's name.
-                 *
-                 * @return string The author's name.
-                 */
                 return get_the_author();
+            }
+        )
+    );
+    register_rest_field(
+        'note', 
+        'userNoteCount', 
+        array(
+            'get_callback' => function() {
+                return count_user_posts( get_current_user_id(), "note");
             }
         )
     );
