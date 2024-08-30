@@ -197,21 +197,31 @@ function logo_title(){
 add_filter('login_headertitle', 'logo_title');
 
 
+
 /**
- * Sanitizes the post content and title for a private note and sets the post status to private.
+ * Modifies the post data for the 'note' post type, sanitizing the post content and title, 
+ * and setting the post status to 'private' if the post is not in the trash.
  *
- * @param array $data The post data to be sanitized and updated.
- * @return array The sanitized and updated post data.
+ * @param array $data The post data to be modified.
+ * @param array $postarr The post array.
+ *
+ * @throws No exception is thrown, but the function will die if the user has reached their notes limit.
+ *
+ * @return array The modified post data.
  */
-function privateNote($data){
+function privateNote($data, $postarr){
     if($data['post_type'] == 'note'){
+        if(count_user_posts( get_current_user_id(), 'note') > 4 && !$postarr['ID']){
+            die("You have reached your notes limit.");
+        }
+
         $data['post_content'] = sanitize_textarea_field($data['post_content']);
         $data['post_title'] = sanitize_text_field($data['post_title']);
     }
     if($data['post_type'] == 'note' && $data['post_status'] != 'trash'){
         $data['post_status'] = 'private';
-        }    
+    }    
     return $data;
 }
 
-add_filter('wp_insert_post_data', 'privateNote');
+add_filter('wp_insert_post_data', 'privateNote', 10, 2);

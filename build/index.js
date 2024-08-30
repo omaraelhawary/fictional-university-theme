@@ -303,6 +303,9 @@ class myNotes {
         console.log(response);
       },
       error: response => {
+        if (response.responseText == "You have reached your notes limit.") {
+          jquery__WEBPACK_IMPORTED_MODULE_0___default()(".note-limit-message").addClass("active");
+        }
         console.log("error");
         console.log(response);
       }

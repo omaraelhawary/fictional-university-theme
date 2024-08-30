@@ -16,7 +16,9 @@ if (!is_user_logged_in()) {
         <h2 class="headline headline--medium">Create New Note</h2>
         <input placeholder="Note Title" class="new-note-title" type="text">
         <textarea class="new-note-body" placeholder="Your note here..."></textarea>
-        <span class="submit-note btn btn--blue">Create Note</span> <span class="note-limit-message"></span>
+        <span class="submit-note btn btn--blue">Create Note</span> <span class="note-limit-message"> Note limit reached:
+            delete an existing note to make room for new one.</span>
+
     </div>
 
     <ul class='min-list link-list' id="my-notes">
