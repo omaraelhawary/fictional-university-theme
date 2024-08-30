@@ -195,124 +195,136 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "jquery");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 
 class myNotes {
   constructor() {
-    this.deleteBtn = document.querySelector(".delete-note");
-    this.editeBtn = document.querySelector(".edit-note");
-    this.events();
+    if (document.querySelector("#my-notes")) {
+      axios__WEBPACK_IMPORTED_MODULE_0__["default"].defaults.headers.common["X-WP-Nonce"] = uniData.nonce;
+      this.myNotes = document.querySelector("#my-notes");
+      this.events();
+    }
   }
   events() {
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()("#my-notes").on("click", ".delete-note", this.deleteNote);
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()("#my-notes").on("click", ".edit-note", this.editNote.bind(this));
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()("#my-notes").on("click", ".update-note", this.saveNote.bind(this));
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".submit-note").on("click", this.submitNote.bind(this));
+    this.myNotes.addEventListener("click", e => this.clickHandler(e));
+    document.querySelector(".submit-note").addEventListener("click", () => this.submitNote());
   }
-  deleteNote(e) {
-    var thisNote = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e.target).parents("li");
-    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
-      beforeSend: xhr => {
-        xhr.setRequestHeader("X-WP-Nonce", uniData.nonce);
-      },
-      url: uniData.root_url + "/wp-json/wp/v2/note/" + thisNote.data('id'),
-      type: 'DELETE',
-      success: response => {
-        thisNote.slideUp();
-        console.log("deleted");
-        console.log(response);
-        if (response.userNoteCount > 5) {
-          jquery__WEBPACK_IMPORTED_MODULE_0___default()(".note-limit-message").removeClass("active");
-        }
-      },
-      error: response => {
-        console.log("error");
-        console.log(response);
-      }
-    });
+  clickHandler(e) {
+    if (e.target.classList.contains("delete-note") || e.target.classList.contains("fa-trash-o")) this.deleteNote(e);
+    if (e.target.classList.contains("edit-note") || e.target.classList.contains("fa-pencil") || e.target.classList.contains("fa-times")) this.editNote(e);
+    if (e.target.classList.contains("update-note") || e.target.classList.contains("fa-arrow-right")) this.saveNote(e);
+  }
+  findNearestParentLi(el) {
+    let thisNote = el;
+    while (thisNote.tagName != "LI") {
+      thisNote = thisNote.parentElement;
+    }
+    return thisNote;
   }
   editNote(e) {
-    var thisNote = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e.target).parents("li");
-    if (thisNote.data('state') == "editable") {
+    const thisNote = this.findNearestParentLi(e.target);
+    if (thisNote.getAttribute("data-state") == "editable") {
       this.makeNoteReadonly(thisNote);
     } else {
       this.makeNoteEditable(thisNote);
     }
   }
   makeNoteEditable(thisNote) {
-    thisNote.find(".edit-note").html('<i class="fa fa-times" aria-hidden="true"></i> Cancel');
-    thisNote.find('.note-title-field, .note-body-field').removeAttr('readonly').addClass("note-active-field");
-    thisNote.find(".update-note").addClass("update-note--visible");
-    thisNote.data("state", "editable");
+    thisNote.querySelector(".edit-note").innerHTML = '<i class="fa fa-times" aria-hidden="true"></i> Cancel';
+    thisNote.querySelector(".note-title-field").removeAttribute("readonly");
+    thisNote.querySelector(".note-body-field").removeAttribute("readonly");
+    thisNote.querySelector(".note-title-field").classList.add("note-active-field");
+    thisNote.querySelector(".note-body-field").classList.add("note-active-field");
+    thisNote.querySelector(".update-note").classList.add("update-note--visible");
+    thisNote.setAttribute("data-state", "editable");
   }
   makeNoteReadonly(thisNote) {
-    thisNote.find(".edit-note").html('<i class="fa fa-pencil" aria-hidden="true"></i> Edit');
-    thisNote.find('.note-title-field, .note-body-field').attr('readonly', 'readyonly').removeClass("note-active-field");
-    thisNote.find(".update-note").removeClass("update-note--visible");
-    thisNote.data("state", "cancel");
+    thisNote.querySelector(".edit-note").innerHTML = '<i class="fa fa-pencil" aria-hidden="true"></i> Edit';
+    thisNote.querySelector(".note-title-field").setAttribute("readonly", "true");
+    thisNote.querySelector(".note-body-field").setAttribute("readonly", "true");
+    thisNote.querySelector(".note-title-field").classList.remove("note-active-field");
+    thisNote.querySelector(".note-body-field").classList.remove("note-active-field");
+    thisNote.querySelector(".update-note").classList.remove("update-note--visible");
+    thisNote.setAttribute("data-state", "cancel");
   }
-  saveNote(e) {
-    var thisNote = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e.target).parents("li");
-    var ourUpdateData = {
-      'title': thisNote.find(".note-title-field").val(),
-      'content': thisNote.find(".note-body-field").val()
-    };
-    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
-      beforeSend: xhr => {
-        xhr.setRequestHeader("X-WP-Nonce", uniData.nonce);
-      },
-      url: uniData.root_url + "/wp-json/wp/v2/note/" + thisNote.data('id'),
-      type: 'POST',
-      data: ourUpdateData,
-      success: response => {
-        this.makeNoteReadonly(thisNote);
-        console.log("updated");
-        console.log(response);
-      },
-      error: response => {
-        console.log("error");
-        console.log(response);
+  async deleteNote(e) {
+    const thisNote = this.findNearestParentLi(e.target);
+    try {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_0__["default"].delete(uniData.root_url + "/wp-json/wp/v2/note/" + thisNote.getAttribute("data-id"));
+      thisNote.style.height = `${thisNote.offsetHeight}px`;
+      setTimeout(function () {
+        thisNote.classList.add("fade-out");
+      }, 20);
+      setTimeout(function () {
+        thisNote.remove();
+      }, 401);
+      if (response.data.userNoteCount < 5) {
+        document.querySelector(".note-limit-message").classList.remove("active");
       }
-    });
+    } catch (e) {
+      console.log("Sorry");
+    }
   }
-  submitNote(e) {
-    var newNote = {
-      'title': jquery__WEBPACK_IMPORTED_MODULE_0___default()(".new-note-title").val(),
-      'content': jquery__WEBPACK_IMPORTED_MODULE_0___default()(".new-note-body").val(),
-      'status': 'private'
+  async saveNote(e) {
+    const thisNote = this.findNearestParentLi(e.target);
+    var ourUpdatedPost = {
+      "title": thisNote.querySelector(".note-title-field").value,
+      "content": thisNote.querySelector(".note-body-field").value
     };
-    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
-      beforeSend: xhr => {
-        xhr.setRequestHeader("X-WP-Nonce", uniData.nonce);
-      },
-      url: uniData.root_url + "/wp-json/wp/v2/note/",
-      type: 'POST',
-      data: newNote,
-      success: response => {
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()(".new-note-title, .new-note-body").val("");
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()(`
-                    <li data-id="${response.id}">
-                        <input readonly class="note-title-field" value="${response.title.raw}">
-                        <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</span>
-                        <span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</span>
-                        <textarea readonly class="note-body-field"> ${response.content.raw}
-                        </textarea>
-                        <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i>
-                            Save</span>
-                    </li>    
-                `).prependTo("#my-notes").hide().slideDown();
-        console.log("added");
-        console.log(response);
-      },
-      error: response => {
-        if (response.responseText == "You have reached your notes limit.") {
-          jquery__WEBPACK_IMPORTED_MODULE_0___default()(".note-limit-message").addClass("active");
-        }
-        console.log("error");
-        console.log(response);
+    try {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_0__["default"].post(uniData.root_url + "/wp-json/wp/v2/note/" + thisNote.getAttribute("data-id"), ourUpdatedPost);
+      this.makeNoteReadonly(thisNote);
+    } catch (e) {
+      console.log(e);
+      console.log("Sorry");
+    }
+  }
+  async submitNote(e) {
+    var ourNewPost = {
+      "title": document.querySelector(".new-note-title").value,
+      "content": document.querySelector(".new-note-body").value,
+      "status": "publish"
+    };
+    try {
+      const response = await axios__WEBPACK_IMPORTED_MODULE_0__["default"].post(uniData.root_url + "/wp-json/wp/v2/note/", ourNewPost);
+      if (response.data != "You have reached your note limit!") {
+        document.querySelector(".new-note-title").value = "";
+        document.querySelector(".new-note-body").value = "";
+        document.querySelector("#my-notes").insertAdjacentHTML("afterbegin", ` <li data-id="${response.data.id}" class="fade-in-calc">
+                  <input readonly class="note-title-field" value="${response.data.title.raw}">
+                  <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</span>
+                  <span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</span>
+                  <textarea readonly class="note-body-field">${response.data.content.raw}</textarea>
+                  <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i> Save</span>
+                </li>`);
+
+        // notice in the above HTML for the new <li> I gave it a class of fade-in-calc which will make it invisible temporarily so we can count its natural height
+
+        let finalHeight; // browser needs a specific height to transition to, you can't transition to 'auto' height
+        let newlyCreated = document.querySelector("#my-notes li");
+
+        // give the browser 30 milliseconds to have the invisible element added to the DOM before moving on
+        setTimeout(function () {
+          finalHeight = `${newlyCreated.offsetHeight}px`;
+          newlyCreated.style.height = "0px";
+        }, 30);
+
+        // give the browser another 20 milliseconds to count the height of the invisible element before moving on
+        setTimeout(function () {
+          newlyCreated.classList.remove("fade-in-calc");
+          newlyCreated.style.height = finalHeight;
+        }, 50);
+
+        // wait the duration of the CSS transition before removing the hardcoded calculated height from the element so that our design is responsive once again
+        setTimeout(function () {
+          newlyCreated.style.removeProperty("height");
+        }, 450);
+      } else {
+        document.querySelector(".note-limit-message").classList.add("active");
       }
-    });
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (myNotes);
@@ -487,16 +499,6 @@ class Search {
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
-
-/***/ }),
-
-/***/ "jquery":
-/*!*************************!*\
-  !*** external "jQuery" ***!
-  \*************************/
-/***/ ((module) => {
-
-module.exports = window["jQuery"];
 
 /***/ }),
 
@@ -9087,18 +9089,6 @@ const isThenable = (thing) =>
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
 /******/ 		};
 /******/ 	})();
 /******/ 	
