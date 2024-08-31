@@ -1,6 +1,7 @@
 <?php
 
 require get_theme_file_path('/inc/search-route.php');
+require get_theme_file_path('/inc/like-route.php'); //Call like custom API route
 
 function pageBannersection($args = NULL){
 
@@ -199,8 +200,6 @@ function logo_title(){
 }
 
 add_filter('login_headertitle', 'logo_title');
-
-
 
 /**
  * Modifies the post data for the 'note' post type, sanitizing the post content and title, 
