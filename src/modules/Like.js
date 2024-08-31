@@ -7,24 +7,27 @@ class Like {
     }
 
     events() {
-        $(".like-box").on("click", this.clickHandler.bind(this))
+        $(".like-box").on("click", this.clickHandler.bind(this));
     }
 
     clickHandler(e) {
         var clickedElement = $(e.target).closest(".like-box");
 
         if (clickedElement.data('exists') == 'yes') {
-            this.deleteLike();
+            this.deleteLike(clickedElement);
         } else {
-            this.createLike();
+            this.createLike(clickedElement);
         }
     }
 
 
-    createLike() {
+    createLike(clickedElement) {
         $.ajax({
             url: uniData.root_url + "/wp-json/university/v1/manageLike",
             type: "POST",
+            data: {
+                'professorID': clickedElement.data('professor')
+            },
             success: (response) => {
                 console.log('success')
                 console.log(response)
@@ -36,7 +39,7 @@ class Like {
         });
     }
 
-    deleteLike() {
+    deleteLike(clickedElement) {
         $.ajax({
             url: uniData.root_url + "/wp-json/university/v1/manageLike",
             type: "DELETE",

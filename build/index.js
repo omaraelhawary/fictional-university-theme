@@ -182,15 +182,18 @@ class Like {
   clickHandler(e) {
     var clickedElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e.target).closest(".like-box");
     if (clickedElement.data('exists') == 'yes') {
-      this.deleteLike();
+      this.deleteLike(clickedElement);
     } else {
-      this.createLike();
+      this.createLike(clickedElement);
     }
   }
-  createLike() {
+  createLike(clickedElement) {
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       url: uniData.root_url + "/wp-json/university/v1/manageLike",
       type: "POST",
+      data: {
+        'professorID': clickedElement.data('professor')
+      },
       success: response => {
         console.log('success');
         console.log(response);
@@ -201,7 +204,7 @@ class Like {
       }
     });
   }
-  deleteLike() {
+  deleteLike(clickedElement) {
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       url: uniData.root_url + "/wp-json/university/v1/manageLike",
       type: "DELETE",
