@@ -189,6 +189,9 @@ class Like {
   }
   createLike(clickedElement) {
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      beforeSend: xhr => {
+        xhr.setRequestHeader("X-WP-Nonce", uniData.nonce);
+      },
       url: uniData.root_url + "/wp-json/university/v1/manageLike",
       type: "POST",
       data: {
