@@ -22,11 +22,33 @@ class Like {
 
 
     createLike() {
-
+        $.ajax({
+            url: uniData.root_url + "/wp-json/university/v1/manageLike",
+            type: "POST",
+            success: (response) => {
+                console.log('success')
+                console.log(response)
+            },
+            error: (response) => {
+                console.log('fail')
+                console.log(response)
+            }
+        });
     }
 
     deleteLike() {
-
+        $.ajax({
+            url: uniData.root_url + "/wp-json/university/v1/manageLike",
+            type: "DELETE",
+            success: (response) => {
+                console.log('success')
+                console.log(response)
+            },
+            error: (response) => {
+                console.log('fail')
+                console.log(response)
+            }
+        });
     }
 
 }

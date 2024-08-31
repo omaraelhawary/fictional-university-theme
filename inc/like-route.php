@@ -19,10 +19,10 @@ function universityLikeRoutes(){
 
 add_action('rest_api_init', 'universityLikeRoutes');
 
-function createLike(){
-    return "Thanks for Like";
-}
+function createLike() {
+    return 'Thanks for trying to create a like.';
+  }
 
-function deleteLike(){
-    return "Thanks for Unlike";
-}
+  function deleteLike() {
+    return 'Thanks for trying to delete a like';
+  }
