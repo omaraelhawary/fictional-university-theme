@@ -181,7 +181,7 @@ class Like {
   }
   clickHandler(e) {
     var clickedElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()(e.target).closest(".like-box");
-    if (clickedElement.data('exists') == 'yes') {
+    if (clickedElement.attr('data-exists') == 'yes') {
       this.deleteLike(clickedElement);
     } else {
       this.createLike(clickedElement);
@@ -198,6 +198,11 @@ class Like {
         'professorID': clickedElement.data('professor')
       },
       success: response => {
+        clickedElement.attr("data-exists", "yes");
+        var likeCount = parseInt(clickedElement.find(".like-count").html(), 10);
+        likeCount++;
+        clickedElement.find(".like-count").html(likeCount);
+        clickedElement.attr("data-like", response);
         console.log('success');
         console.log(response);
       },
@@ -209,9 +214,20 @@ class Like {
   }
   deleteLike(clickedElement) {
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      beforeSend: xhr => {
+        xhr.setRequestHeader("X-WP-Nonce", uniData.nonce);
+      },
+      data: {
+        'like': clickedElement.attr('data-like')
+      },
       url: uniData.root_url + "/wp-json/university/v1/manageLike",
       type: "DELETE",
       success: response => {
+        clickedElement.attr("data-exists", "no");
+        var likeCount = parseInt(clickedElement.find(".like-count").html(), 10);
+        likeCount--;
+        clickedElement.find(".like-count").html(likeCount);
+        clickedElement.attr("data-like", "");
         console.log('success');
         console.log(response);
       },

@@ -44,7 +44,10 @@
                         }
                     }
                 ?>
-                <span class="like-box" data-exists="<?php echo $existStatus; ?>" data-professor="<?php the_ID(); ?>">
+                <span class="like-box" data-exists="<?php echo $existStatus; ?>" data-professor="<?php the_ID(); ?>"
+                    data-like="<?php 
+                    if (isset($existLike->posts[0]->ID)) echo $existLike->posts[0]->ID; 
+                    ?>">
                     <i class="fa fa-heart-o" aria-hidden="true"></i>
                     <i class="fa fa-heart" aria-hidden="true"></i>
                     <span class="like-count"> <?php echo $likeCount -> found_posts;?></span>
@@ -64,7 +67,7 @@
     
             foreach($relatedPrograms as $program){ ?>
     <li>
-        <a href="<?php echo get_the_permalink($program); ?>">
+        <a href=" <?php echo get_the_permalink($program); ?>">
             <?php echo get_the_title( $program );?>
         </a>
     </li>
