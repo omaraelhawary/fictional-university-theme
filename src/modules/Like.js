@@ -1,78 +1,68 @@
-import $ from "jquery";
+import axios from "axios";
 
 class Like {
 
     constructor() {
-        this.events();
+        if (document.querySelector(".like-box")) {
+            axios.defaults.headers.common["X-WP-Nonce"] = uniData.nonce
+            this.events()
+        }
     }
 
     events() {
-        $(".like-box").on("click", this.clickHandler.bind(this));
+        document.querySelector(".like-box").addEventListener("click", e => this.clickHandler(e))
     }
 
     clickHandler(e) {
-        var clickedElement = $(e.target).closest(".like-box");
+        let clickedElement = e.target
 
-        if (clickedElement.attr('data-exists') == 'yes') {
-            this.deleteLike(clickedElement);
+        while (!clickedElement.classList.contains("like-box")) {
+            clickedElement = clickedElement.parentElement
+        }
+
+        if (clickedElement.getAttribute("data-exists") == "yes") {
+            this.deleteLike(clickedElement)
         } else {
-            this.createLike(clickedElement);
+            this.createLike(clickedElement)
         }
     }
 
 
-    createLike(clickedElement) {
-        $.ajax({
-            beforeSend: (xhr) => {
-                xhr.setRequestHeader("X-WP-Nonce", uniData.nonce);
-            },
-            url: uniData.root_url + "/wp-json/university/v1/manageLike",
-            type: "POST",
-            data: {
-                'professorID': clickedElement.data('professor')
-            },
-            success: (response) => {
-                clickedElement.attr("data-exists", "yes");
-                var likeCount = parseInt(clickedElement.find(".like-count").html(), 10);
-                likeCount++;
-                clickedElement.find(".like-count").html(likeCount);
-                clickedElement.attr("data-like", response);
-                console.log('success')
-                console.log(response)
-            },
-            error: (response) => {
-                console.log('fail')
-                console.log(response)
+    async createLike(clickedElement) {
+        try {
+            const response = await axios.post(uniData.root_url + "/wp-json/university/v1/manageLike", { "professorID": clickedElement.getAttribute("data-professor") })
+            if (response.data != "Invalid Professor ID") {
+                clickedElement.setAttribute("data-exists", "yes")
+                var likeCount = parseInt(clickedElement.querySelector(".like-count").innerHTML, 10)
+                likeCount++
+                clickedElement.querySelector(".like-count").innerHTML = likeCount
+                clickedElement.setAttribute("data-like", response.data)
             }
-        });
+            console.log(response.data)
+        } catch (e) {
+            console.log(response.data)
+            console.log(e);
+            console.log("Sorry")
+        }
     }
 
-    deleteLike(clickedElement) {
-        $.ajax({
-            beforeSend: (xhr) => {
-                xhr.setRequestHeader("X-WP-Nonce", uniData.nonce);
-            },
-            data: {
-                'like': clickedElement.attr('data-like'),
-            },
-            url: uniData.root_url + "/wp-json/university/v1/manageLike",
-            type: "DELETE",
-            success: (response) => {
-                clickedElement.attr("data-exists", "no");
-                var likeCount = parseInt(clickedElement.find(".like-count").html(), 10);
-                likeCount--;
-                clickedElement.find(".like-count").html(likeCount);
-                clickedElement.attr("data-like", "");
-                console.log('success')
-                console.log(response)
-            },
-            error: (response) => {
-                console.log('fail')
-                console.log(response)
-            }
-        });
+    async deleteLike(clickedElement) {
+        try {
+            const response = await axios({
+                url: uniData.root_url + "/wp-json/university/v1/manageLike",
+                method: 'delete',
+                data: { "like": clickedElement.getAttribute("data-like") },
+            })
+            clickedElement.setAttribute("data-exists", "no")
+            var likeCount = parseInt(clickedElement.querySelector(".like-count").innerHTML, 10)
+            likeCount--
+            clickedElement.querySelector(".like-count").innerHTML = likeCount
+            clickedElement.setAttribute("data-like", "")
+            console.log(response.data)
+        } catch (e) {
+            console.log(e)
+        }
     }
-
 }
 
 export default Like;
