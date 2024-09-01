@@ -96,7 +96,7 @@ function uni_adjust_queries($query){
 add_action( 'pre_get_posts', 'uni_adjust_queries');
 
 function university_map_api($api){
-    $api['key'] = 'AIzaSyBbV4y2vPyu8k8PFqyRN1SjC4xHBsqQSNs';
+    $api['key'] = '############'; //insert your API here
     return $api; 
 }
 add_filter( 'acf/fields/google_map/api', 'university_map_api');
