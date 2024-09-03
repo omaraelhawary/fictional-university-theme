@@ -60,6 +60,7 @@ function university_features(){
     add_image_size( 'professorLandscape', 400, 260, true );
     add_image_size( 'professorProtriat', 480, 650, true );
     add_image_size( 'pageBanner', 1500, 350, true );
+    add_image_size('slideshowImage', 1900, 525, true);
 }
 
 add_action('after_setup_theme', 'university_features');
