@@ -50,7 +50,17 @@
             ?>
                 
         <div class="generic-content">
-            <?php the_content(); ?>
+            <?php 
+                the_content(); 
+                $searchString = sanitize_text_field( get_query_var('s') );
+                if ($searchString){
+                    echo "Search results for: " . get_query_var('$searchString');
+                }   
+            ?>
+            <form method="get">
+                <input name="search" placehoder="Search" type="text" value="<?php echo get_search_query(); ?>">
+                <button>Submit</button>
+            </form>
         </div>
     </div>
 

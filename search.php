@@ -2,7 +2,7 @@
  get_header(); 
  pageBannersection(array(
   'title' => 'Search Results',
-  'subtitle' => 'You shearch for &ldquo;' . esc_html(get_search_query()) . '&rdquo;.'
+  'subtitle' => 'You search for &ldquo;' . esc_html(get_search_query()) . '&rdquo;.'
   ));
 ?>
 
